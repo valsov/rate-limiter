@@ -6,8 +6,9 @@ type Storage[TConfig, TValue any] interface {
 }
 
 type Data[TConfig, TValue any] struct {
-	Config TConfig
-	Value  TValue
+	HasConfig bool
+	Config    TConfig
+	Value     TValue
 }
 
 type memoryStore[TConfig, TValue any] struct {

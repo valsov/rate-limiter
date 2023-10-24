@@ -12,19 +12,20 @@ type LeakyBucketConfig struct {
 	BucketSize    int
 }
 
-type LeakyBucketLimiter struct {
-	BaseLimiter[LeakyBucketConfig, int] // int: Current filling
-}
+type LeakyBucketLimiter struct{}
 
-func NewLeakyBucketLimiter(storageProvider data.Storage[LeakyBucketConfig, int], lockProvider data.Locker) Limiter {
-	return &LeakyBucketLimiter{
-		BaseLimiter: BaseLimiter[LeakyBucketConfig, int]{
-			store:  storageProvider,
-			locker: lockProvider,
-		},
+func NewLeakyBucketLimiter(storageProvider data.Storage[LeakyBucketConfig, int], lockProvider data.Locker) *RateLimiter[LeakyBucketConfig, int] {
+	return &RateLimiter[LeakyBucketConfig, int]{
+		store:   storageProvider,
+		locker:  lockProvider,
+		Limiter: &LeakyBucketLimiter{},
 	}
 }
 
-func (l *LeakyBucketLimiter) TryAllow(id string, count int) (bool, error) {
+func (l *LeakyBucketLimiter) ValidateConfig(config LeakyBucketConfig) error {
 	panic("TODO")
+}
+
+func (l *LeakyBucketLimiter) TryAllow(count int, config LeakyBucketConfig, userValue int) bool {
+	panic("todo")
 }

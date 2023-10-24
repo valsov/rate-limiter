@@ -12,19 +12,20 @@ type FixedWindowConfig struct {
 	MaxTokens  int
 }
 
-type FixedWindowLimiter struct {
-	BaseLimiter[FixedWindowConfig, int] // int: Current tokens
-}
+type FixedWindowLimiter struct{}
 
-func NewFixedWindowLimiter(storageProvider data.Storage[FixedWindowConfig, int], lockProvider data.Locker) Limiter {
-	return &FixedWindowLimiter{
-		BaseLimiter: BaseLimiter[FixedWindowConfig, int]{
-			store:  storageProvider,
-			locker: lockProvider,
-		},
+func NewFixedWindowLimiter(storageProvider data.Storage[FixedWindowConfig, int], lockProvider data.Locker) *RateLimiter[FixedWindowConfig, int] {
+	return &RateLimiter[FixedWindowConfig, int]{
+		store:   storageProvider,
+		locker:  lockProvider,
+		Limiter: &FixedWindowLimiter{},
 	}
 }
 
-func (f *FixedWindowLimiter) TryAllow(id string, count int) (bool, error) {
+func (f *FixedWindowLimiter) ValidateConfig(config FixedWindowConfig) error {
 	panic("TODO")
+}
+
+func (f *FixedWindowLimiter) TryAllow(count int, config FixedWindowConfig, userValue int) bool {
+	panic("todo")
 }

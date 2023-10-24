@@ -16,19 +16,20 @@ type BucketValue struct {
 	RemainingTokens int
 }
 
-type BucketLimiter struct {
-	BaseLimiter[BucketConfig, BucketValue]
-}
+type BucketLimiter struct{}
 
-func NewBucketLimiter(storageProvider data.Storage[BucketConfig, BucketValue], lockProvider data.Locker) Limiter {
-	return &BucketLimiter{
-		BaseLimiter: BaseLimiter[BucketConfig, BucketValue]{
-			store:  storageProvider,
-			locker: lockProvider,
-		},
+func NewBucketLimiter(storageProvider data.Storage[BucketConfig, BucketValue], lockProvider data.Locker) *RateLimiter[BucketConfig, BucketValue] {
+	return &RateLimiter[BucketConfig, BucketValue]{
+		store:   storageProvider,
+		locker:  lockProvider,
+		Limiter: &BucketLimiter{},
 	}
 }
 
-func (b *BucketLimiter) TryAllow(id string, count int) (bool, error) {
+func (b *BucketLimiter) ValidateConfig(config BucketConfig) error {
+	panic("TODO")
+}
+
+func (b *BucketLimiter) TryAllow(count int, config BucketConfig, userValue BucketValue) bool {
 	panic("todo")
 }
