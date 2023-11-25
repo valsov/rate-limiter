@@ -2,6 +2,11 @@ package rlimit
 
 import "github.com/valsov/rlimit/data"
 
+type Limiter[TConfig, TValue any] interface {
+	ValidateConfig(config TConfig) error
+	TryAllow(count int, config TConfig, userValue TValue) bool
+}
+
 type RateLimiter[TConfig, TValue any] struct {
 	store        data.Storage[TConfig, TValue]
 	locker       data.Locker
@@ -50,9 +55,4 @@ func (r *RateLimiter[TConfig, TValue]) TryAllow(id string, count int) (allowed b
 
 	err = r.store.Set(id, data)
 	return allowed, err
-}
-
-type Limiter[TConfig, TValue any] interface {
-	ValidateConfig(config TConfig) error
-	TryAllow(count int, config TConfig, userValue TValue) bool
 }
