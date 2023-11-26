@@ -21,6 +21,6 @@ func NewFixedWindowLimiter(storageProvider storage.Storage[FixedWindowConfig, in
 	}
 }
 
-func (f *FixedWindowLimiter) TryAllow(count int, config FixedWindowConfig, userValue int, now time.Time) bool {
+func (f *FixedWindowLimiter) TryAllow(count int, config FixedWindowConfig, userValue int, nowUtc time.Time) (bool, int) {
 	panic("todo")
 }

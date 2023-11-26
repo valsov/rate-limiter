@@ -21,6 +21,6 @@ func NewLeakyBucketLimiter(storageProvider storage.Storage[LeakyBucketConfig, in
 	}
 }
 
-func (l *LeakyBucketLimiter) TryAllow(count int, config LeakyBucketConfig, userValue int, now time.Time) bool {
+func (l *LeakyBucketLimiter) TryAllow(count int, config LeakyBucketConfig, userValue int, nowUtc time.Time) (bool, int) {
 	panic("todo")
 }

@@ -1,13 +1,14 @@
 package rlimit
 
 import (
+	"errors"
 	"time"
 
 	"github.com/valsov/rlimit/storage"
 )
 
 type Limiter[TConfig, TValue any] interface {
-	TryAllow(count int, config TConfig, userValue TValue, now time.Time) bool
+	TryAllow(count int, config TConfig, userValue TValue, nowUtc time.Time) (bool, TValue)
 }
 
 type RateLimiter[TConfig, TValue any] struct {
@@ -24,7 +25,11 @@ func (r *RateLimiter[TConfig, TValue]) Configure(id string) error {
 	panic("TODO")
 }
 
-func (r *RateLimiter[TConfig, TValue]) TryAllow(id string, count int) (allowed bool, err error) {
+func (r *RateLimiter[TConfig, TValue]) TryAllow(id string, count int) (bool, error) {
+	if count <= 0 {
+		return false, errors.New("count must be greater than 0")
+	}
+
 	data, err := r.store.Get(id)
 	if err != nil {
 		return false, nil
@@ -34,7 +39,8 @@ func (r *RateLimiter[TConfig, TValue]) TryAllow(id string, count int) (allowed b
 		config = r.GlobalConfig
 	}
 
-	allowed = r.InternalLimiter.TryAllow(count, config, data.Value, time.Now())
+	allowed, newUserValue := r.InternalLimiter.TryAllow(count, config, data.Value, time.Now().UTC())
+	data.Value = newUserValue
 
 	err = r.store.Set(id, data)
 	return allowed, err

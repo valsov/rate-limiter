@@ -21,6 +21,6 @@ func NewSlidingWindowLimiter(storageProvider storage.Storage[SlidingWindowConfig
 	}
 }
 
-func (s *SlidingWindowLimiter) TryAllow(count int, config SlidingWindowConfig, userValue int, now time.Time) bool {
+func (s *SlidingWindowLimiter) TryAllow(count int, config SlidingWindowConfig, userValue int, nowUtc time.Time) (bool, int) {
 	panic("todo")
 }
