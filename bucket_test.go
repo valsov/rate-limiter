@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-func TestTryAllow(t *testing.T) {
+func TestBucketTryAllow(t *testing.T) {
 	config := BucketConfig{
 		RefillRate:  time.Hour,
 		RefillCount: 10,
