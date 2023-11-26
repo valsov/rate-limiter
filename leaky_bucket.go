@@ -3,7 +3,7 @@ package rlimit
 import (
 	"time"
 
-	"github.com/valsov/rlimit/data"
+	"github.com/valsov/rlimit/storage"
 )
 
 type LeakyBucketConfig struct {
@@ -14,18 +14,13 @@ type LeakyBucketConfig struct {
 
 type LeakyBucketLimiter struct{}
 
-func NewLeakyBucketLimiter(storageProvider data.Storage[LeakyBucketConfig, int], lockProvider data.Locker) *RateLimiter[LeakyBucketConfig, int] {
+func NewLeakyBucketLimiter(storageProvider storage.Storage[LeakyBucketConfig, int]) *RateLimiter[LeakyBucketConfig, int] {
 	return &RateLimiter[LeakyBucketConfig, int]{
-		store:   storageProvider,
-		locker:  lockProvider,
-		Limiter: &LeakyBucketLimiter{},
+		store:           storageProvider,
+		InternalLimiter: &LeakyBucketLimiter{},
 	}
 }
 
-func (l *LeakyBucketLimiter) ValidateConfig(config LeakyBucketConfig) error {
-	panic("TODO")
-}
-
-func (l *LeakyBucketLimiter) TryAllow(count int, config LeakyBucketConfig, userValue int) bool {
+func (l *LeakyBucketLimiter) TryAllow(count int, config LeakyBucketConfig, userValue int, now time.Time) bool {
 	panic("todo")
 }

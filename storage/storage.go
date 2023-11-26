@@ -1,4 +1,4 @@
-package data
+package storage
 
 type Storage[TConfig, TValue any] interface {
 	Get(id string) (Data[TConfig, TValue], error)

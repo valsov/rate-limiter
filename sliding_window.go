@@ -3,7 +3,7 @@ package rlimit
 import (
 	"time"
 
-	"github.com/valsov/rlimit/data"
+	"github.com/valsov/rlimit/storage"
 )
 
 type SlidingWindowConfig struct {
@@ -14,18 +14,13 @@ type SlidingWindowConfig struct {
 
 type SlidingWindowLimiter struct{}
 
-func NewSlidingWindowLimiter(storageProvider data.Storage[SlidingWindowConfig, int], lockProvider data.Locker) *RateLimiter[SlidingWindowConfig, int] {
+func NewSlidingWindowLimiter(storageProvider storage.Storage[SlidingWindowConfig, int]) *RateLimiter[SlidingWindowConfig, int] {
 	return &RateLimiter[SlidingWindowConfig, int]{
-		store:   storageProvider,
-		locker:  lockProvider,
-		Limiter: &SlidingWindowLimiter{},
+		store:           storageProvider,
+		InternalLimiter: &SlidingWindowLimiter{},
 	}
 }
 
-func (s *SlidingWindowLimiter) ValidateConfig(config SlidingWindowConfig) error {
-	panic("TODO")
-}
-
-func (s *SlidingWindowLimiter) TryAllow(count int, config SlidingWindowConfig, userValue int) bool {
+func (s *SlidingWindowLimiter) TryAllow(count int, config SlidingWindowConfig, userValue int, now time.Time) bool {
 	panic("todo")
 }
