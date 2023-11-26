@@ -30,19 +30,17 @@ func (b *BucketLimiter) TryAllow(count int, config BucketConfig, userValue Bucke
 	// Compute current bucket fill
 	sinceLastRefill := nowUtc.Sub(userValue.LastRefillUtc)
 	refillTimes := int(sinceLastRefill.Seconds() / config.RefillRate.Seconds())
-	newFill := userValue.RemainingTokens + refillTimes*config.RefillCount
-	if newFill > config.BucketSize {
-		newFill = config.BucketSize
+	userValue.RemainingTokens += refillTimes * config.RefillCount
+	if userValue.RemainingTokens > config.BucketSize {
+		userValue.RemainingTokens = config.BucketSize
 	}
 
 	// Try allow count
-	allow := newFill >= count
+	allow := userValue.RemainingTokens >= count
 	if allow {
-		newFill -= count
+		userValue.RemainingTokens -= count
 	}
 
-	// Update user value
-	userValue.RemainingTokens = newFill
 	userValue.LastRefillUtc = userValue.LastRefillUtc.Add(time.Duration(refillTimes) * config.RefillRate) // Not nowUtc because it would make the refill time drift
 	return allow, userValue
 }
