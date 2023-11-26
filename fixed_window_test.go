@@ -6,12 +6,13 @@ import (
 )
 
 func TestFixedWindowTryAllow(t *testing.T) {
+	baseTime := time.Now().UTC()
 	config := FixedWindowConfig{
 		WindowLength: time.Hour,
 		MaxTokens:    10,
 	}
 	userValue := FixedWindowValue{
-		WindowStartUtc:  time.Now().UTC(),
+		WindowStartUtc:  baseTime,
 		RemainingTokens: 10,
 	}
 
@@ -24,30 +25,30 @@ func TestFixedWindowTryAllow(t *testing.T) {
 	}{
 		{
 			count:                   1,
-			nowUtc:                  userValue.WindowStartUtc.Add(10 * time.Minute),
+			nowUtc:                  baseTime.Add(10 * time.Minute),
 			expectedAllow:           true,
-			expectedWindowStartUtc:  userValue.WindowStartUtc,
+			expectedWindowStartUtc:  baseTime,
 			expectedRemainingTokens: 9,
 		},
 		{
 			count:                   9,
-			nowUtc:                  userValue.WindowStartUtc.Add(20 * time.Minute),
+			nowUtc:                  baseTime.Add(20 * time.Minute),
 			expectedAllow:           true,
-			expectedWindowStartUtc:  userValue.WindowStartUtc,
+			expectedWindowStartUtc:  baseTime,
 			expectedRemainingTokens: 0,
 		},
 		{
 			count:                   1,
-			nowUtc:                  userValue.WindowStartUtc.Add(30 * time.Minute),
+			nowUtc:                  baseTime.Add(30 * time.Minute),
 			expectedAllow:           false,
-			expectedWindowStartUtc:  userValue.WindowStartUtc,
+			expectedWindowStartUtc:  baseTime,
 			expectedRemainingTokens: 0,
 		},
 		{
 			count:                   1,
-			nowUtc:                  userValue.WindowStartUtc.Add(time.Hour),
+			nowUtc:                  baseTime.Add(time.Hour),
 			expectedAllow:           true,
-			expectedWindowStartUtc:  userValue.WindowStartUtc.Add(time.Hour),
+			expectedWindowStartUtc:  baseTime.Add(time.Hour),
 			expectedRemainingTokens: 9,
 		},
 	}
@@ -56,13 +57,13 @@ func TestFixedWindowTryAllow(t *testing.T) {
 		result, newUserValue := limiter.TryAllow(tc.count, config, userValue, tc.nowUtc)
 
 		if result != tc.expectedAllow {
-			t.Errorf("wrong result. expected=%v got=%v", tc.expectedAllow, result)
+			t.Fatalf("wrong result. expected=%v got=%v", tc.expectedAllow, result)
 		}
 		if newUserValue.WindowStartUtc != tc.expectedWindowStartUtc {
-			t.Errorf("wrong userValue.WindowStartUtc. expected=%v got=%v", tc.expectedWindowStartUtc, userValue.WindowStartUtc)
+			t.Fatalf("wrong userValue.WindowStartUtc. expected=%v got=%v", tc.expectedWindowStartUtc, userValue.WindowStartUtc)
 		}
 		if newUserValue.RemainingTokens != tc.expectedRemainingTokens {
-			t.Errorf("wrong userValue.RemainingTokens. expected=%d got=%d", tc.expectedRemainingTokens, userValue.RemainingTokens)
+			t.Fatalf("wrong userValue.RemainingTokens. expected=%d got=%d", tc.expectedRemainingTokens, userValue.RemainingTokens)
 		}
 
 		// Update user value for next test cases
