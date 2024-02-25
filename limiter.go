@@ -17,12 +17,17 @@ type RateLimiter[TConfig, TValue any] struct {
 	InternalLimiter Limiter[TConfig, TValue]
 }
 
-func (r *RateLimiter[TConfig, TValue]) GlobalConfigure() error {
-	panic("TODO")
+func (r *RateLimiter[TConfig, TValue]) GlobalConfigure(config TConfig) {
+	r.GlobalConfig = config
 }
 
-func (r *RateLimiter[TConfig, TValue]) Configure(id string) error {
-	panic("TODO")
+func (r *RateLimiter[TConfig, TValue]) Configure(id string, config TConfig) error {
+	data, err := r.store.Get(id)
+	if err != nil {
+		return err
+	}
+	data.Config = config
+	return r.store.Set(id, data)
 }
 
 func (r *RateLimiter[TConfig, TValue]) TryAllow(id string, count int) (bool, error) {

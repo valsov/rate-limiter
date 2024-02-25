@@ -19,10 +19,11 @@ type LeakyBucketValue struct {
 
 type LeakyBucketLimiter struct{}
 
-func NewLeakyBucketLimiter(storageProvider storage.Storage[LeakyBucketConfig, LeakyBucketValue]) *RateLimiter[LeakyBucketConfig, LeakyBucketValue] {
+func NewLeakyBucketLimiter(storageProvider storage.Storage[LeakyBucketConfig, LeakyBucketValue], globalConfig LeakyBucketConfig) *RateLimiter[LeakyBucketConfig, LeakyBucketValue] {
 	return &RateLimiter[LeakyBucketConfig, LeakyBucketValue]{
 		store:           storageProvider,
 		InternalLimiter: &LeakyBucketLimiter{},
+		GlobalConfig:    globalConfig,
 	}
 }
 

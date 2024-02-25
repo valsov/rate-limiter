@@ -19,10 +19,11 @@ type BucketValue struct {
 
 type BucketLimiter struct{}
 
-func NewBucketLimiter(storageProvider storage.Storage[BucketConfig, BucketValue]) *RateLimiter[BucketConfig, BucketValue] {
+func NewBucketLimiter(storageProvider storage.Storage[BucketConfig, BucketValue], globalConfig BucketConfig) *RateLimiter[BucketConfig, BucketValue] {
 	return &RateLimiter[BucketConfig, BucketValue]{
 		store:           storageProvider,
 		InternalLimiter: &BucketLimiter{},
+		GlobalConfig:    globalConfig,
 	}
 }
 

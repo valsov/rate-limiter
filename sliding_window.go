@@ -19,10 +19,11 @@ type SlidingWindowValue struct {
 
 type SlidingWindowLimiter struct{}
 
-func NewSlidingWindowLimiter(storageProvider storage.Storage[SlidingWindowConfig, SlidingWindowValue]) *RateLimiter[SlidingWindowConfig, SlidingWindowValue] {
+func NewSlidingWindowLimiter(storageProvider storage.Storage[SlidingWindowConfig, SlidingWindowValue], globalConfig SlidingWindowConfig) *RateLimiter[SlidingWindowConfig, SlidingWindowValue] {
 	return &RateLimiter[SlidingWindowConfig, SlidingWindowValue]{
 		store:           storageProvider,
 		InternalLimiter: &SlidingWindowLimiter{},
+		GlobalConfig:    globalConfig,
 	}
 }
 

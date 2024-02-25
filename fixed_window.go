@@ -18,10 +18,11 @@ type FixedWindowValue struct {
 
 type FixedWindowLimiter struct{}
 
-func NewFixedWindowLimiter(storageProvider storage.Storage[FixedWindowConfig, FixedWindowValue]) *RateLimiter[FixedWindowConfig, FixedWindowValue] {
+func NewFixedWindowLimiter(storageProvider storage.Storage[FixedWindowConfig, FixedWindowValue], globalConfig FixedWindowConfig) *RateLimiter[FixedWindowConfig, FixedWindowValue] {
 	return &RateLimiter[FixedWindowConfig, FixedWindowValue]{
 		store:           storageProvider,
 		InternalLimiter: &FixedWindowLimiter{},
+		GlobalConfig:    globalConfig,
 	}
 }
 
